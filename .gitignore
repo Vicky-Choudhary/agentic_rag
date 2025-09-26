@@ -9,6 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
+# Ignore environment files
+*.env
+
 # VSCode / IDEs
 .vscode/
 .idea/
