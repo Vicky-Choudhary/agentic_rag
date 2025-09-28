@@ -17,6 +17,7 @@ dependencies = [
     { name = "langchain-huggingface" },
     { name = "python-dotenv" },
     { name = "sentence-transformers" },
+    { name = "uvicorn" },
 ]
 
 [package.metadata]
@@ -31,6 +32,7 @@ requires-dist = [
     { name = "langchain-huggingface", specifier = ">=0.3.1" },
     { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "sentence-transformers", specifier = ">=5.1.1" },
+    { name = "uvicorn", specifier = ">=0.37.0" },
 ]
 
 [[package]]
