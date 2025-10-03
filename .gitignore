@@ -29,3 +29,9 @@ Thumbs.db
 # Ignore notebooks and data folders
 notebook/
 data/
+
+#Ignore Vector Database related file 
+/backend/aliases
+/backend/collections
+/backend/.qdrant*
+/backend/raft*
