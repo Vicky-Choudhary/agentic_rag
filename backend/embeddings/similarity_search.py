@@ -1,32 +1,46 @@
-from langchain_community.vectorstores import FAISS
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import Qdrant
+from langchain.embeddings import HuggingFaceBgeEmbeddings
+import os 
+from dotenv import load_dotenv
+load_dotenv()
+QDRANT_URL = os.getenv("QDRANT_URL")
+COLLECTION_NAME = os.getenv("COLLECTION_NAME")
 
 class SearchSimilar:
-
     
-    def setup_vector_db(pdf_path):
+    def setup_vector_db(chunks):
         """Setup vector database from PDF"""
-        # Load and chunk PDF
-        loader = PyPDFLoader(pdf_path)
-        documents = loader.load()
-        
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=1000,
-            chunk_overlap=50
-        )
-        chunks = text_splitter.split_documents(documents)
-        
-        # Create vector database
-        embeddings = HuggingFaceEmbeddings(
-            model_name="sentence-transformers/all-mpnet-base-v2"
-        )
-        vector_db = FAISS.from_documents(chunks, embeddings)
-        
-        return vector_db
 
-    def get_local_content(vector_db, query):
-        """Get content from vector database"""
-        docs = vector_db.similarity_search(query, k=5)
-        return " ".join([doc.page_content for doc in docs])
+        #Load the embedding model 
+        model_kwargs = {"device":"cpu"}
+        encode_kwargs = {"normalize_embeddings": False}
+        model_name = "BAAI/bge-large-en"
+
+        embeddings = HuggingFaceBgeEmbeddings(
+            model_name = model_name,
+            encode_kwargs = encode_kwargs,
+            model_kwargs = model_kwargs
+        )
+        # Create vector database
+        print("embedding model loaded succesfully......")
+
+        url = QDRANT_URL
+        collection_name = COLLECTION_NAME
+        qdrant = Qdrant.from_documents(
+            chunks,
+            embeddings,
+            url = url,
+            prefer_grpc = False,
+            collection_name = collection_name
+
+        )
+
+        print("Qdrant index created")
+        # embeddings = HuggingFaceBgeEmbeddings(
+        #     model_name="sentence-transformers/all-mpnet-base-v2"
+        # )
+        # vector_db = FAISS.from_documents(chunks, embeddings)
+        
+        # return vector_db
+
+   
